@@ -4,13 +4,19 @@
 
 import cv2
 import easyocr
+import torch
+import time
 
+# especificando o modelo da IA
+
+model = torch.hub.load('ultralytics/yolov5', 'yolov5', pretrained=True)
 
 def taking_the_screenshot():
     cap = cv2.VideoCapture(0)
 
     if not cap:
         print('nao foi possivel acessar a camera')
+        quit()
 
     while True:
         frame_true, frame = cap.read()
@@ -18,22 +24,23 @@ def taking_the_screenshot():
 
         if not frame_true:
             print('o frame nao foi validado')
-        
+
         # mostrando a imagem numa janela
 
         cv2.imshow('Camera', frame)
 
 
-        # colocando o programa pra esperar por uma tecla
-        key = cv2.waitKey(1)
+        
+        
+        if detecting_bus(frame): # detectando o onibus
+            time.sleep(4) # espera 4 segundos
+            cv2.imwrite('screenshot.png', frame) # cria o screenshot.png
+            text, first_time = reading_text('screenshot.png') # pega o texto da leitura da imagem
+            print(text)
+            if first_time:
+                break
 
-        if key == ord('s'):
-            cv2.imwrite('screenshot.png', frame)
-            print('Tirou print')
-            return True
-
-        elif key == ord('q'):
-            print('saindo')
+        else:
             break
 
     cap.release()
@@ -46,8 +53,22 @@ def reading_text(image):
 
     for (bbox, text, prob) in result:
         if prob >= 0.80:
-            return text
+            return text, True
 
-# valid = taking_the_screenshot()
 
-print(reading_text('screenshot.png')) 
+# detectando o onibus
+
+def detecting_bus(frame):
+    
+    results = model(frame)
+
+    detections = results.pred[0]
+
+    for det in detections:
+        if int(det[5]) == 0 and det[4] >= 0.60:
+            return True
+    
+    
+    return False
+
+taking_the_screenshot()
