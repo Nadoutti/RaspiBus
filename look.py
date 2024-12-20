@@ -1,15 +1,12 @@
-# Nesse arquivo vamos usar EasyOCR para reconhecer que um onibus chegou e entao reconhecer seu codigo
+# No fim esse arquivo vai retornar a string da deteccao do onibus
 
-# retorna uma string
-
+from ultralytics import YOLO
 import cv2
 import easyocr
-import torch
 import time
 
-# especificando o modelo da IA
 
-model = torch.hub.load('ultralytics/yolov5', 'yolov5', pretrained=True)
+model = YOLO("treinado.pt") # aqui carrego o modelo que treinei
 
 def taking_the_screenshot():
     cap = cv2.VideoCapture(0)
@@ -60,15 +57,8 @@ def reading_text(image):
 
 def detecting_bus(frame):
     
-    results = model(frame)
+    results = model.predict(frame, show=True, save=True)
+    print(results)
 
-    detections = results.pred[0]
 
-    for det in detections:
-        if int(det[5]) == 0 and det[4] >= 0.60:
-            return True
-    
-    
-    return False
-
-taking_the_screenshot()
+detecting_bus('testandoonibus.jpg')
