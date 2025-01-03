@@ -6,7 +6,7 @@ import easyocr
 import time
 
 
-model = YOLO("treinado.pt") # aqui carrego o modelo que treinei
+# model = YOLO("modelos\yolo11n_ncnn_model") # aqui carrego o modelo que treinei
 
 def taking_the_screenshot():
     cap = cv2.VideoCapture(0)
@@ -23,21 +23,17 @@ def taking_the_screenshot():
             print('o frame nao foi validado')
 
         # mostrando a imagem numa janela
-
         cv2.imshow('Camera', frame)
 
 
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break 
         
-        
-        if detecting_bus(frame): # detectando o onibus
+        if detecting_bus(frame) > 0.5:
             time.sleep(4) # espera 4 segundos
             cv2.imwrite('screenshot.png', frame) # cria o screenshot.png
             text, first_time = reading_text('screenshot.png') # pega o texto da leitura da imagem
             print(text)
-            if first_time:
-                break
-
-        else:
             break
 
     cap.release()
@@ -51,14 +47,22 @@ def reading_text(image):
     for (bbox, text, prob) in result:
         if prob >= 0.80:
             return text, True
+    
 
 
 # detectando o onibus
 
 def detecting_bus(frame):
     
-    results = model.predict(frame, show=True, save=True)
-    print(results)
+    ncnn_model = YOLO('modelos\yolo11n_ncnn_model')
+
+    results = ncnn_model.predict(frame, save=False, classes=5, half=True, save_conf=False, save_txt=False)
+
+    for detection in results[0].boxes.data:
+        x_min, y_min, x_max, y_max, confidence, class_id = detection
+        return confidence 
+    
+    return .4
 
 
-detecting_bus('testandoonibus.jpg')
+taking_the_screenshot()
