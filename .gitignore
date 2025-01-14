@@ -166,3 +166,4 @@ cython_debug/
 modelos/
 runs/
 imagens/
+bus-dict/
