@@ -1,14 +1,13 @@
 # No fim esse arquivo vai retornar a string da deteccao do onibus
 
 from ultralytics import YOLO
+from process import processing
 import cv2
 import easyocr
 import time
-
-
 # model = YOLO("modelos\yolo11n_ncnn_model") # aqui carrego o modelo que treinei
 
-def taking_the_screenshot():
+def main_loop():
     cap = cv2.VideoCapture(0)
 
     if not cap:
@@ -32,9 +31,9 @@ def taking_the_screenshot():
         if detecting_bus(frame) > 0.5:
             time.sleep(4) # espera 4 segundos
             cv2.imwrite('screenshot.png', frame) # cria o screenshot.png
-            text, first_time = reading_text('screenshot.png') # pega o texto da leitura da imagem
-            print(text)
-            break
+            text = reading_text('screenshot.png') # pega o texto da leitura da imagem
+            linha = processing()
+            
 
     cap.release()
     cv2.destroyAllWindows()
@@ -46,7 +45,7 @@ def reading_text(image):
 
     for (bbox, text, prob) in result:
         if prob >= 0.80:
-            return text, True
+            return text
     
 
 
@@ -65,4 +64,4 @@ def detecting_bus(frame):
     return .4
 
 
-taking_the_screenshot()
+main_loop()

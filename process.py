@@ -1,3 +1,14 @@
-# Vai processar a informacao obtida e procurar dentro de um banco de dados ou na internet a rota do onibus
+# depois de receber uma string, esse arquivo vai buscar o onibus no banco de dados
+import pandas as pd
 
-# retorna uma string
+string = '5141-10_1'
+def processing(string):
+    df = pd.read_csv('bus-dict-csv/mydb.csv')
+    if 'LINHA_CODI' in df.columns:    
+        linha = df.loc[df['LINHA_CODI'] == string, 'NOME'].tolist()
+        if linha:
+            return linha[0]
+        else:
+            return 'onibus nao reconhecido'
+    else:
+        return 'これは悪い'
