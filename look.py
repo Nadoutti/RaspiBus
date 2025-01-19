@@ -2,6 +2,7 @@
 
 from ultralytics import YOLO
 from process import processing
+from speak import speak
 import cv2
 import easyocr
 import time
@@ -32,7 +33,8 @@ def main_loop():
             time.sleep(4) # espera 4 segundos
             cv2.imwrite('screenshot.png', frame) # cria o screenshot.png
             text = reading_text('screenshot.png') # pega o texto da leitura da imagem
-            linha = processing()
+            linha = processing(text)
+            speak(linha)
             
 
     cap.release()

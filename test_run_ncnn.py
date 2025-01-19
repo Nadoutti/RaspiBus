@@ -8,4 +8,4 @@ results = ncnn_model.predict('imagens/testeonibus1.jpg', save=False, classes=5, 
 
 for detection in results[0].boxes.data:
     x_min, y_min, x_max, y_max, confidence, class_id = detection
-    print(f"Confianca: {confidence.item()}") 
+    print(f"Confianca: {confidence.item()}")

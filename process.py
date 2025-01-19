@@ -2,10 +2,10 @@
 import pandas as pd
 
 string = '5141-10_1'
-def processing(string):
+def processing(codigo):
     df = pd.read_csv('bus-dict-csv/mydb.csv')
     if 'LINHA_CODI' in df.columns:    
-        linha = df.loc[df['LINHA_CODI'] == string, 'NOME'].tolist()
+        linha = df.loc[df['LINHA_CODI'] == codigo, 'NOME'].tolist()
         if linha:
             return linha[0]
         else:
