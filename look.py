@@ -35,6 +35,8 @@ def main_loop():
             text = reading_text('screenshot.png') # pega o texto da leitura da imagem
             linha = processing(text)
             speak(linha)
+            time.sleep(10)
+            
             
 
     cap.release()

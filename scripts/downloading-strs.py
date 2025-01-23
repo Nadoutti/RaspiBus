@@ -6,7 +6,7 @@ import time
 # lendo e armazenando todos os destinos do arquivo csv
 
 
-destinos = []
+destinos = {}
 
 pegando_strs = True
 download_mp3 = True
@@ -21,12 +21,14 @@ if pegando_strs:
                 # removendo os pontos finais
                 if word[-1] == '.':
                     resolvido.append(word.replace('.', ''))
+                    continue
                 if word == '-':
                     resolvido.append(word.replace('-', '_'))
+                    continue
                 
                 resolvido.append(word)
                 if len(resolvido) == len(dest):
-                    destinos.append(''.join(resolvido))
+                    destinos[''.join(resolvido)] = linha[4]
                     resolvido = []
 
         print('primeira etapa completa com sucesso')
@@ -36,11 +38,12 @@ print('Passando para a segunda etapa..')
 time.sleep(3)
 num = 0
 if download_mp3:
-    for texto in destinos:
+    for nome, voz in destinos.items():
         num += 1
-        tts = gTTS(texto, lang='pt', tld="com.br")
-        tts.save(f"vozes/{texto}.mp3")
+        tts = gTTS(voz, lang='pt', tld="com.br")
+        tts.save(f"vozes/{nome}.mp3")
         print(f'{num}')
 
 print("Audios prontos!")
         
+# resolver a pronuncia da filha da puta 

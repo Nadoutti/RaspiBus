@@ -4,6 +4,4 @@
 import os
 
 def speak(destino:str):
-    os.system(f'start vozes\{destino}')
-
-speak('3A. DIVISAO - METRÔ CARRÃO.mp3')
+    os.system(f'start vozes/{destino}')
