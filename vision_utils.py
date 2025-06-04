@@ -1,13 +1,19 @@
+import os
 import easyocr
 from ultralytics import YOLO
 
+# inicializando variaveis de vision e reading
+
+llm_path = os.path.join("modelos", "yolo11n_ncnn_model")
+ncnn_model = YOLO(llm_path)
+reader = easyocr.Reader(['pt'])
+
 
 def reading_text(image):
-    reader = easyocr.Reader(['pt'])
     result = reader.readtext(image)
 
     for (bbox, text, prob) in result:
-        if prob >= 0.80:
+        if float( prob ) >= 0.80:
             return text
     
 
@@ -16,7 +22,6 @@ def reading_text(image):
 
 def detecting_bus(frame):
     
-    ncnn_model = YOLO('modelos\yolo11n_ncnn_model')
 
     results = ncnn_model.predict(frame, save=False, classes=5, half=True, save_conf=False, save_txt=False)
 

@@ -14,6 +14,8 @@ def main_loop():
         print('nao foi possivel acessar a camera')
         quit()
 
+    last_detection_time = 0
+    cooldown_time = 10
     while True:
         frame_true, frame = cap.read()
 
@@ -28,14 +30,15 @@ def main_loop():
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break 
+
+        current_time = time.time()
         
-        if detecting_bus(frame) > 0.5:
-            time.sleep(4) # espera 4 segundos
+        if detecting_bus(frame) > 0.5 and (current_time - last_detection_time > cooldown_time):
+            last_detection_time = current_time
             cv2.imwrite('screenshot.png', frame) # cria o screenshot.png
             text = reading_text('screenshot.png') # pega o texto da leitura da imagem
             linha = processing(text)
             speak(linha)
-            time.sleep(10)
             
             
 
