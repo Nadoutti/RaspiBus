@@ -34,7 +34,6 @@ def main_loop():
         current_time = time.time()
         
         if detecting_bus(frame) > 0.5 and (current_time - last_detection_time > cooldown_time):
-            last_detection_time = current_time
             cv2.imwrite('screenshot.png', frame) # cria o screenshot.png
             text = reading_text('screenshot.png') # pega o texto da leitura da imagem
             linha = processing(text)
